@@ -70,10 +70,10 @@ persistence:
     enabled: false
     storageClass: "-"
     accessMode: ReadWriteOnce
-    size: 50Gi
+    size: 50Mi
 
   dataNode:
     enabled: false
     storageClass: "-"
     accessMode: ReadWriteOnce
-    size: 200Gi
+    size: 200Mi

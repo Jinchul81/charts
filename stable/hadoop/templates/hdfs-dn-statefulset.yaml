@@ -73,10 +73,23 @@ spec:
       - name: hadoop-config
         configMap:
           name: {{ template "hadoop.fullname" . }}
+      {{- if eq .Values.persistence.dataNode.enabled false }}
       - name: dfs
-      {{- if .Values.persistence.dataNode.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "hadoop.fullname" . }}-hdfs-dn
-      {{- else }}        
-        emptyDir: {}
       {{- end }}
+  {{- if .Values.persistence.dataNode.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: dfs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistence.dataNode.size }}
+      {{- if .Values.persistence.dataNode.storageClass}}
+      {{- if (eq "-" .Values.persistence.dataNode.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.dataNode.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}
